@@ -139,7 +139,7 @@ flowchart TD
 │ ✨ {N} new writing tasks are ready to go        ← 标题          │
 │                                                                 │
 │ @{用户名} — Writing tasks from **{会议名称}**                    │
-│   · {开始时间}–{结束时间} · {主持人}            ← 上下文信息     │
+│   · {开始时间}–{结束时间} · Hosted by {主持人}   ← 上下文信息     │
 │                                                                 │
 │ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─            │
 │ **1. {任务标题}**                               ← 任务          │
@@ -161,7 +161,7 @@ flowchart TD
 | 板块 | 格式 | 说明 |
 |---|---|---|
 | 标题 | `✨ {N} new writing tasks are ready to go`（加粗） | N = 检测到的任务数量 |
-| 上下文行 | `@{用户} — Writing tasks from **{会议名称}** · {时间段} · {主持人}` | @mention 为 Zoom Chat 可点击的用户提及 |
+| 上下文行 | `@{用户} — Writing tasks from **{会议名称}** · {时间段} · Hosted by {主持人}` | @mention 为 Zoom Chat 可点击的用户提及 |
 | 任务列表 | 编号列表，任务之间以细线分隔 | 每个任务一条 |
 | 任务条目 — 标题 | `{序号}. {任务标题}`（加粗） | 从会议转录中提取的任务名称 |
 | 任务条目 — Prompt | `{AI 生成的 Prompt}`（浅色文字） | AI 自动生成的写作指令，描述具体要写什么 |
@@ -173,7 +173,7 @@ flowchart TD
 ```
 ✨ 4 new writing tasks are ready to go
 
-@Alex Chen — Writing tasks from Sprint Planning · 9:00–10:00 · Sarah Chen
+@Alex Chen — Writing tasks from Sprint Planning · 9:00–10:00 · Hosted by Sarah Chen
 
 1. Post sprint update to #engineering channel
    Share a brief sprint update covering auth module progress, dashboard PR

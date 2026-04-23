@@ -58,7 +58,7 @@ const App = () => {
               <SenderLine time="9:15 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✨ 4 new writing tasks are ready to go</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Writing tasks from <span className="font-semibold">Sprint Planning</span> <span className="text-gray-400">·</span> <span className="text-[12px] text-gray-400">9:00–10:00 · Sarah Chen</span></p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Writing tasks from <span className="font-semibold">Sprint Planning</span> <span className="text-gray-400">·</span> <span className="text-[12px] text-gray-400">9:00–10:00 · Hosted by Sarah Chen</span></p>
                 {meetingNotification.tasks.map((task, i) => (
                   <div key={task.id} className={`py-2 ${i > 0 ? 'border-t border-gray-100' : ''}`}>
                     <p className="font-semibold text-gray-900 text-[12.5px]">{i + 1}. {task.title}</p>
