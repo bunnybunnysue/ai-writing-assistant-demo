@@ -1,6 +1,6 @@
-# AI Writing Assistant — Chat Demo
+# Writing Tasks — Chat Demo
 
-A standalone interactive prototype showing how the **AI Writing Assistant** bot sends messages in Zoom Team Chat after a meeting ends.
+A standalone interactive prototype showing how the **Writing Tasks** bot sends messages in Zoom Team Chat after a meeting ends.
 
 ## What This Demonstrates
 

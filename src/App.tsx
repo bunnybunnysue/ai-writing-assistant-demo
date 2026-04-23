@@ -14,7 +14,7 @@ const BotAvatar = ({ size = 'sm' }: { size?: 'sm' | 'md' }) => {
 
 const SenderLine = ({ time }: { time: string }) => (
   <div className="flex items-center gap-2 mb-1">
-    <span className="text-[13px] font-bold text-gray-900">AI Writing Assistant</span>
+    <span className="text-[13px] font-bold text-gray-900">Writing Tasks</span>
     <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-gray-100 text-gray-500 tracking-wider">APP</span>
     <span className="text-[11px] text-gray-400">{time}</span>
   </div>
@@ -35,7 +35,7 @@ const App = () => {
           <BotAvatar size="md" />
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-[14px] font-bold text-gray-900">AI Writing Assistant</h3>
+              <h3 className="text-[14px] font-bold text-gray-900">Writing Tasks</h3>
               <span className="text-[10px] font-medium text-teal-600 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">DEMO</span>
             </div>
             <p className="text-[11px] text-gray-400">Supported capabilities only</p>
