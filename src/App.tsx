@@ -263,7 +263,7 @@ const FullVersionView = () => {
         </div>
         <div>
           <h3 className="text-[14px] font-bold text-gray-900">Writing Tasks</h3>
-          <p className="text-[11px] text-gray-400">Full version — all capabilities</p>
+          <p className="text-[11px] text-gray-400">Handles writing tasks assigned to you from meetings</p>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-5 py-5">
