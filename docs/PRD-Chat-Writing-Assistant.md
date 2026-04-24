@@ -243,7 +243,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your output for **#{频道名}** has been prepared:` |
+| 介绍语 | `@{用户} — Your message for **#{频道名}** has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整的生成消息文本 |
 
 示例：
@@ -251,7 +251,7 @@ flowchart TD
 ```
 ✅ Task done: Post sprint update
 
-@Alex Chen — Your output for #engineering has been prepared:
+@Alex Chen — Your message for #engineering has been prepared:
 
 ┃ Hi team, quick sprint update:
 ┃ • Auth module: Core logic complete, PR #127 under review
@@ -271,7 +271,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your output to **{收件人邮箱}** has been prepared:` |
+| 介绍语 | `@{用户} — Your email to **{收件人邮箱}** has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整邮件内容（主题行、称呼、正文、落款） |
 
 示例：
@@ -279,7 +279,7 @@ flowchart TD
 ```
 ✅ Task done: Stakeholder follow-up email
 
-@Alex Chen — Your output to sarah.chen@company.com has been prepared:
+@Alex Chen — Your email to sarah.chen@company.com has been prepared:
 
 ┃ Hi Sarah,
 ┃
@@ -336,7 +336,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your output has been prepared:` |
+| 介绍语 | `@{用户} — Your message has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整的生成文本 |
 
 示例：
@@ -344,7 +344,7 @@ flowchart TD
 ```
 ✅ Task done: Meeting recap
 
-@Alex Chen — Your output has been prepared:
+@Alex Chen — Your message has been prepared:
 
 ┃ Sprint Planning Meeting — Key Takeaways
 ┃ • Auth module core logic complete, PR under review
@@ -364,7 +364,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your output has been prepared. {N} deliverables are ready:` |
+| 介绍语 | `@{用户} — Your deliverables are ready. {N} files included:` |
 | 产出预览 | 绿色引用块中逐行展示每个交付物：`{类型 emoji} {文件名}` 为可点击的蓝色超链接 |
 
 **文件类型与 Emoji 映射表：**
@@ -381,7 +381,7 @@ flowchart TD
 ```
 ✅ Task done: Q1 business review package
 
-@Alex Chen — Your output has been prepared. 3 deliverables are ready:
+@Alex Chen — Your deliverables are ready. 3 files included:
 
 ┃ 📊 Q1 Business Review Deck
 ┃ 📋 Q1 Revenue & Metrics Breakdown
@@ -645,10 +645,10 @@ interface SingleOutputMessage {
 }
 ```
 
-**介绍语的动态生成逻辑（固定句式，不嵌入任务名称）：**
-- 有 `targetChannel` → `Your output for **#{频道}** has been prepared:`
-- 有 `recipientEmail` → `Your output to **{邮箱}** has been prepared:`
-- 两者都没有 → `Your output has been prepared:`
+**介绍语的动态生成逻辑（固定句式，按任务类型选词）：**
+- 类型为 `message` + 有 `targetChannel` → `Your message for **#{频道}** has been prepared:`
+- 类型为 `email` + 有 `recipientEmail` → `Your email to **{邮箱}** has been prepared:`
+- 类型为 `message` + 无收件人 → `Your message has been prepared:`
 
 #### 文档更新
 
