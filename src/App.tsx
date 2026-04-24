@@ -73,6 +73,258 @@ const InputBar = () => (
 );
 
 /* ═══════════════════════════════════════════════════
+   Jump-to Overlay Views
+   ═══════════════════════════════════════════════════ */
+
+interface JumpTarget {
+  type: 'channel' | 'email' | 'dm';
+  name: string;
+  initials?: string;
+  color?: string;
+  message: string;
+  subject?: string;
+  recipientEmail?: string;
+}
+
+const ChannelJumpView = ({ target, onBack }: { target: JumpTarget; onBack: () => void }) => (
+  <div className="fixed inset-0 bg-white z-50 flex flex-col">
+    {/* Channel header */}
+    <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-3">
+      <button onClick={onBack} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors flex-shrink-0">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-600 text-sm font-bold">#</div>
+      <div className="flex-1 min-w-0">
+        <h3 className="text-[14px] font-bold text-gray-900">{target.name.replace('#', '')}</h3>
+        <p className="text-[11px] text-gray-400">24 members</p>
+      </div>
+      <div className="flex items-center gap-2">
+        <button className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400"><svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></button>
+        <button className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400"><svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+      </div>
+    </div>
+
+    {/* Existing channel messages */}
+    <div className="flex-1 overflow-y-auto px-5 py-5">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex-1 h-px bg-gray-200" /><span className="text-[11px] text-gray-400 font-medium">Yesterday</span><div className="flex-1 h-px bg-gray-200" />
+      </div>
+      <div className="mb-4 flex gap-3">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5">SC</div>
+        <div>
+          <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">Sarah Chen</span><span className="text-[11px] text-gray-400">4:30 PM</span></div>
+          <p className="text-[13px] text-gray-700 leading-relaxed">Hey team, just a reminder — please wrap up any pending PR reviews by EOD. We're aiming to cut a release tomorrow morning. 🚀</p>
+        </div>
+      </div>
+      <div className="mb-4 flex gap-3">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5">MS</div>
+        <div>
+          <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">Michael Sun</span><span className="text-[11px] text-gray-400">4:45 PM</span></div>
+          <p className="text-[13px] text-gray-700 leading-relaxed">Got it! I'll finish reviewing the dashboard PR tonight. 👍</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 mb-6 mt-6">
+        <div className="flex-1 h-px bg-gray-200" /><span className="text-[11px] text-gray-400 font-medium">Today</span><div className="flex-1 h-px bg-gray-200" />
+      </div>
+      <div className="mb-4 flex gap-3">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5">LW</div>
+        <div>
+          <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">Lisa Wang</span><span className="text-[11px] text-gray-400">9:02 AM</span></div>
+          <p className="text-[13px] text-gray-700 leading-relaxed">Good morning! FYI the CI pipeline is green again after last night's fix.</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Pre-filled input */}
+    <div className="px-4 pb-4">
+      <div className="border-2 border-blue-300 rounded-xl px-4 py-3 bg-blue-50/30 ring-2 ring-blue-100">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+          </div>
+          <span className="text-[11px] text-blue-600 font-medium">Pre-filled by Writing Tasks</span>
+        </div>
+        <p className="text-[13px] text-gray-700 leading-relaxed whitespace-pre-line mb-3">{target.message}</p>
+        <div className="flex items-center justify-between pt-2 border-t border-blue-200/50">
+          <div className="flex items-center gap-2">
+            <button className="text-gray-400 hover:text-gray-600"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg></button>
+            <button className="text-gray-400 hover:text-gray-600"><svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button>
+          </div>
+          <button className="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center transition-colors">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const EmailJumpView = ({ target, onBack }: { target: JumpTarget; onBack: () => void }) => {
+  const emailLines = target.message.split('\n');
+  const subjectLine = emailLines.find(l => l.startsWith('Subject:'))?.replace('Subject: ', '') || '';
+  const bodyContent = emailLines.filter(l => !l.startsWith('Subject:')).join('\n').trim();
+
+  return (
+    <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      {/* Email header */}
+      <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-3">
+        <button onClick={onBack} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors flex-shrink-0">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center flex-shrink-0">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[14px] font-bold text-gray-900">New Email</h3>
+          <p className="text-[11px] text-gray-400">Compose</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="px-4 py-1.5 rounded-lg text-[12px] font-medium text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors">Discard</button>
+          <button className="px-4 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+            Send
+          </button>
+        </div>
+      </div>
+
+      {/* Email compose form */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto px-6 py-5">
+          {/* Pre-fill badge */}
+          <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+            </div>
+            <span className="text-[12px] text-blue-600 font-medium">Pre-filled by Writing Tasks — review and send when ready</span>
+          </div>
+
+          {/* To field */}
+          <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+            <span className="text-[13px] text-gray-400 font-medium w-16">To</span>
+            <div className="flex-1 flex items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 border border-gray-200">
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white text-[8px] font-bold">SC</div>
+                <span className="text-[12px] text-gray-700 font-medium">{target.recipientEmail}</span>
+                <button className="text-gray-400 hover:text-gray-600"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              </div>
+            </div>
+          </div>
+
+          {/* Cc field */}
+          <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+            <span className="text-[13px] text-gray-400 font-medium w-16">Cc</span>
+            <input type="text" placeholder="Add recipients" className="flex-1 text-[13px] text-gray-700 placeholder-gray-300 outline-none" readOnly />
+          </div>
+
+          {/* Subject field */}
+          <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+            <span className="text-[13px] text-gray-400 font-medium w-16">Subject</span>
+            <p className="flex-1 text-[13px] text-gray-900 font-medium">{subjectLine}</p>
+          </div>
+
+          {/* Body */}
+          <div className="py-4">
+            <div className="text-[13px] text-gray-700 leading-relaxed whitespace-pre-line">{bodyContent}</div>
+          </div>
+
+          {/* Formatting toolbar */}
+          <div className="border-t border-gray-100 pt-3 flex items-center gap-1">
+            {['B', 'I', 'U'].map(fmt => (
+              <button key={fmt} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-[13px] font-bold text-gray-500 transition-colors">{fmt}</button>
+            ))}
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <button className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h10M4 18h10" /></svg></button>
+            <button className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg></button>
+            <button className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DMJumpView = ({ target, onBack }: { target: JumpTarget; onBack: () => void }) => {
+  const isChannel = target.type === 'channel' || target.name.startsWith('#');
+  return (
+    <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      {/* DM/Channel header */}
+      <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-3">
+        <button onClick={onBack} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors flex-shrink-0">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        {isChannel ? (
+          <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-600 text-sm font-bold">#</div>
+        ) : (
+          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${target.color || 'from-gray-300 to-gray-400'} flex items-center justify-center flex-shrink-0 text-white text-xs font-bold`}>{target.initials}</div>
+        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[14px] font-bold text-gray-900">{target.name}</h3>
+          <p className="text-[11px] text-gray-400">{isChannel ? '18 members' : 'Active now'}</p>
+        </div>
+      </div>
+
+      {/* Existing messages */}
+      <div className="flex-1 overflow-y-auto px-5 py-5">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 h-px bg-gray-200" /><span className="text-[11px] text-gray-400 font-medium">Today</span><div className="flex-1 h-px bg-gray-200" />
+        </div>
+        {isChannel ? (
+          <>
+            <div className="mb-4 flex gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5">EZ</div>
+              <div>
+                <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">Emily Zhang</span><span className="text-[11px] text-gray-400">8:45 AM</span></div>
+                <p className="text-[13px] text-gray-700 leading-relaxed">Morning everyone! Quick question — is the product sync still at 2pm today?</p>
+              </div>
+            </div>
+            <div className="mb-4 flex gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5">MS</div>
+              <div>
+                <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">Michael Sun</span><span className="text-[11px] text-gray-400">8:52 AM</span></div>
+                <p className="text-[13px] text-gray-700 leading-relaxed">Yes, confirmed! Same Zoom link as last week.</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-4 flex gap-3">
+              <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${target.color || 'from-gray-300 to-gray-400'} flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold mt-0.5`}>{target.initials}</div>
+              <div>
+                <div className="flex items-center gap-2 mb-0.5"><span className="text-[13px] font-semibold text-gray-900">{target.name}</span><span className="text-[11px] text-gray-400">9:05 AM</span></div>
+                <p className="text-[13px] text-gray-700 leading-relaxed">Hey Alex, just saw the meeting notes. Looks like a productive session! Let me know if you need anything from my side.</p>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Pre-filled input */}
+      <div className="px-4 pb-4">
+        <div className="border-2 border-blue-300 rounded-xl px-4 py-3 bg-blue-50/30 ring-2 ring-blue-100">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+            </div>
+            <span className="text-[11px] text-blue-600 font-medium">Pre-filled by Writing Tasks</span>
+          </div>
+          <p className="text-[13px] text-gray-700 leading-relaxed whitespace-pre-line mb-3">{target.message}</p>
+          <div className="flex items-center justify-between pt-2 border-t border-blue-200/50">
+            <div className="flex items-center gap-2">
+              <button className="text-gray-400 hover:text-gray-600"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg></button>
+              <button className="text-gray-400 hover:text-gray-600"><svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button>
+            </div>
+            <button className="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center transition-colors">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════
    Full Version Components
    ═══════════════════════════════════════════════════ */
 
@@ -90,6 +342,7 @@ const FullVersionView = () => {
   const [runAllState, setRunAllState] = useState<'idle' | 'loading' | 'done'>('idle');
   const [showForwardModal, setShowForwardModal] = useState<string | null>(null);
   const [forwardSearch, setForwardSearch] = useState('');
+  const [jumpTarget, setJumpTarget] = useState<JumpTarget | null>(null);
 
   const handleRunAll = () => {
     setRunAllState('loading');
@@ -110,6 +363,31 @@ const FullVersionView = () => {
     });
   };
 
+  const handleJumpToChannel = (channelName: string, message: string) => {
+    setJumpTarget({ type: 'channel', name: channelName, message });
+  };
+
+  const handleJumpToEmail = (output: typeof autoCompletedOutputs[0]) => {
+    setJumpTarget({
+      type: 'email',
+      name: output.recipient?.name || '',
+      message: output.output,
+      recipientEmail: output.recipient?.email || '',
+    });
+  };
+
+  const handleChooseRecipientSelect = (contact: typeof forwardContacts[0], message: string) => {
+    setShowForwardModal(null);
+    setForwardSearch('');
+    setJumpTarget({
+      type: contact.type === 'channel' ? 'channel' : 'dm',
+      name: contact.type === 'channel' ? `#${contact.name.toLowerCase().replace(/\s+/g, '-')}` : contact.name,
+      initials: contact.initials,
+      color: contact.color,
+      message,
+    });
+  };
+
   const forwardContacts = [
     { id: 'c1', name: 'Sarah Chen', type: 'person' as const, initials: 'SC', color: 'from-pink-400 to-rose-500' },
     { id: 'c2', name: 'Michael Sun', type: 'person' as const, initials: 'MS', color: 'from-emerald-400 to-teal-500' },
@@ -117,6 +395,8 @@ const FullVersionView = () => {
     { id: 'c4', name: 'Product Updates', type: 'channel' as const, initials: '#', color: 'from-purple-400 to-purple-600' },
     { id: 'c5', name: 'Emily Zhang', type: 'person' as const, initials: 'EZ', color: 'from-amber-400 to-orange-500' },
   ];
+
+  const currentForwardMessage = showForwardModal ? autoCompletedOutputs.find(o => o.taskId === showForwardModal)?.output || '' : '';
 
   const renderWritingTaskCard = (task: typeof meetingNotification.tasks[0]) => {
     const isExpanded = expandedTasks.has(task.id);
@@ -209,8 +489,8 @@ const FullVersionView = () => {
 
     const renderActionButton = () => {
       if (isDoc) return <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>Open document</button>;
-      if (isMessage && output.targetChannel) return <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Jump to {output.targetChannel}</button>;
-      if (isEmail) return <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Jump to Email</button>;
+      if (isMessage && output.targetChannel) return <button onClick={() => handleJumpToChannel(output.targetChannel!, output.output)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Jump to {output.targetChannel}</button>;
+      if (isEmail) return <button onClick={() => handleJumpToEmail(output)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Jump to Email</button>;
       if (isMessage && !hasKnownTarget) return <button onClick={() => setShowForwardModal(output.taskId)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Choose recipient to jump</button>;
       return null;
     };
@@ -254,6 +534,13 @@ const FullVersionView = () => {
   };
 
   const filteredContacts = forwardContacts.filter(c => c.name.toLowerCase().includes(forwardSearch.toLowerCase()));
+
+  // Render jump-to overlay views
+  if (jumpTarget) {
+    if (jumpTarget.type === 'email') return <EmailJumpView target={jumpTarget} onBack={() => setJumpTarget(null)} />;
+    if (jumpTarget.type === 'channel') return <ChannelJumpView target={jumpTarget} onBack={() => setJumpTarget(null)} />;
+    return <DMJumpView target={jumpTarget} onBack={() => setJumpTarget(null)} />;
+  }
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -399,25 +686,46 @@ const FullVersionView = () => {
       </div>
       <InputBar />
 
-      {/* Forward modal */}
+      {/* Choose recipient modal */}
       {showForwardModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => { setShowForwardModal(null); setForwardSearch(''); }}>
-          <div className="bg-white rounded-2xl shadow-2xl w-[340px] max-h-[420px] overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <h4 className="text-[14px] font-semibold text-gray-900">Choose recipient</h4>
-              <button onClick={() => { setShowForwardModal(null); setForwardSearch(''); }} className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+          <div className="bg-white rounded-2xl shadow-2xl w-[380px] max-h-[480px] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="px-5 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between mb-1">
+                <h4 className="text-[15px] font-bold text-gray-900">Choose recipient</h4>
+                <button onClick={() => { setShowForwardModal(null); setForwardSearch(''); }} className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              </div>
+              <p className="text-[12px] text-gray-400">Select where to send this message</p>
             </div>
-            <div className="px-4 py-2"><input type="text" placeholder="Search contacts or channels…" value={forwardSearch} onChange={e => setForwardSearch(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-200 text-[13px] outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100 transition-all" autoFocus /></div>
-            <div className="overflow-y-auto max-h-[280px] px-2 pb-2">
-              {filteredContacts.map(c => (
-                <button key={c.id} onClick={() => { setShowForwardModal(null); setForwardSearch(''); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left">
-                  <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0`}>{c.initials}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-gray-900 truncate">{c.name}</p>
-                    <p className="text-[11px] text-gray-400">{c.type === 'channel' ? 'Channel' : 'Direct message'}</p>
-                  </div>
-                </button>
-              ))}
+            <div className="px-4 py-3">
+              <div className="relative">
+                <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <input type="text" placeholder="Search contacts or channels…" value={forwardSearch} onChange={e => setForwardSearch(e.target.value)} className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-gray-200 text-[13px] outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50" autoFocus />
+              </div>
+            </div>
+            {/* Message preview */}
+            <div className="mx-4 mb-3 px-3 py-2 rounded-lg bg-gray-50 border border-gray-100">
+              <p className="text-[11px] text-gray-400 font-medium mb-1">Message to be sent</p>
+              <p className="text-[12px] text-gray-600 line-clamp-2 leading-relaxed">{currentForwardMessage.split('\n')[0]}...</p>
+            </div>
+            <div className="px-2 pb-2">
+              <p className="px-3 py-1.5 text-[11px] text-gray-400 font-medium uppercase tracking-wide">Suggested</p>
+              <div className="overflow-y-auto max-h-[240px]">
+                {filteredContacts.map(c => (
+                  <button key={c.id} onClick={() => handleChooseRecipientSelect(c, currentForwardMessage)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-left group">
+                    {c.type === 'channel' ? (
+                      <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 text-sm font-bold flex-shrink-0">#</div>
+                    ) : (
+                      <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${c.color} flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0`}>{c.initials}</div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium text-gray-900 truncate">{c.name}</p>
+                      <p className="text-[11px] text-gray-400">{c.type === 'channel' ? 'Channel' : 'Direct message'}</p>
+                    </div>
+                    <svg className="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
