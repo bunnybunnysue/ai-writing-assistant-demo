@@ -11,8 +11,8 @@ interface Conversation {
 }
 
 const conversations: Conversation[] = [
-  { id: 'full', name: 'Writing Tasks', lastMessage: '@Alex Chen This task needs more input…', time: '1m', unread: 6, gradient: 'from-blue-500 to-indigo-600' },
-  { id: 'demo', name: 'Writing Tasks (Demo)', lastMessage: '@Alex Chen 4 writing tasks are ready to go', time: '1m', unread: 4, gradient: 'from-teal-500 to-cyan-600' },
+  { id: 'full', name: 'Full Version', lastMessage: '@Alex Chen This task needs more input…', time: '1m', unread: 6, gradient: 'from-blue-500 to-indigo-600' },
+  { id: 'demo', name: 'Markdown Version', lastMessage: '@Alex Chen 4 writing tasks are ready to go', time: '1m', unread: 4, gradient: 'from-teal-500 to-cyan-600' },
 ];
 
 /* ═══════════════════════════════════════════════════
@@ -705,7 +705,7 @@ const FullVersionView = () => {
             </div>
             {/* Message preview */}
             <div className="mx-4 mb-3 px-3 py-2 rounded-lg bg-gray-50 border border-gray-100">
-              <p className="text-[11px] text-gray-400 font-medium mb-1">Message to be sent</p>
+              <p className="text-[11px] text-gray-400 font-medium mb-1">Will be pre-filled in chat input</p>
               <p className="text-[12px] text-gray-600 line-clamp-2 leading-relaxed">{currentForwardMessage.split('\n')[0]}...</p>
             </div>
             <div className="px-2 pb-2">
@@ -745,9 +745,9 @@ const DemoVersionView = () => (
       <div>
         <div className="flex items-center gap-2">
           <h3 className="text-[14px] font-bold text-gray-900">Writing Tasks</h3>
-          <span className="text-[10px] font-medium text-teal-600 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">DEMO</span>
+          <span className="text-[10px] font-medium text-teal-600 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200">MARKDOWN</span>
         </div>
-        <p className="text-[11px] text-gray-400">Simplified version — Markdown only</p>
+        <p className="text-[11px] text-gray-400">Markdown + clickable links only</p>
       </div>
     </div>
     <div className="flex-1 overflow-y-auto px-5 py-5">
