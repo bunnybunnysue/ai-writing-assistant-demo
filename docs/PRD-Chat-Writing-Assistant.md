@@ -1,9 +1,8 @@
-# Writing Tasks — Chat Tab 产品需求文档
+# Writing Tasks — Chat Notification 产品需求文档
 
 > **负责人：** 产品团队
 > **最后更新：** 2026-04-22
 > **状态：** 待研发评审
-> **参考实现：** `src/components/ChatPanel/ChatPanel.tsx`（Demo tab）
 
 ---
 
@@ -17,7 +16,6 @@
 6. [交互与跳转逻辑](#6-交互与跳转逻辑)
 7. [消息发送规则](#7-消息发送规则)
 8. [技术约束](#8-技术约束)
-9. [数据模型要求](#9-数据模型要求)
 
 ---
 
@@ -35,7 +33,7 @@
 |---|---|
 | 发送者名称 | Writing Tasks |
 | 标识徽章 | `APP` |
-| 头像 | 渐变色圆角方形图标（灯泡） |
+| 头像 | Writing Tasks 功能 icon |
 | 消息格式 | Zoom Chat Markdown + 操作按钮 |
 
 ### 支持的任务类型
@@ -44,6 +42,7 @@
 |---|---|---|
 | `message` | 发送至频道或个人的 Chat 消息 | 向 #engineering 发布 Sprint 更新 |
 | `email` | 发送给指定收件人的邮件 | 给利益相关者发跟进邮件 |
+| `doc_create` | 创建新文档 | 创建一份 PRD |
 | `doc_update` | 更新已有文档 | 更新设计规范文档 |
 | `multi_output` | 单个任务生成多个交付物 | Q1 业务回顾包（幻灯片 + 表格 + 数据表） |
 
@@ -60,8 +59,6 @@
 | **任务检测** | `✨ {N} new writing tasks are ready to go` | 一场含后续写作任务的会议结束 | 每场会议 1 条 |
 | **任务完成** | `✅ Task done: {任务标题}` | 某个任务完成产出生成 | 每个完成的任务 1 条 |
 | **需要操作** | `⚠️ Action needed: {任务标题}` | 某个任务因缺少用户输入无法继续 | 每个阻塞的任务 1 条 |
-
-> **重要说明：** 以上不是固定编号的消息序列。系统不会依次发送"第 1 条、第 2 条、第 3 条"。每当相应事件发生时（会议结束、任务完成、任务被阻塞），系统就发送对应类别的消息。同一类别的消息可能发送多次（例如 4 个任务各自完成，就会发送 4 条"任务完成"类消息）。
 
 ### 生命周期流程图
 
@@ -95,7 +92,7 @@ flowchart TD
 
 ```
 ┌── Bot 头像 ────┬── 发送者信息栏 ──────────────────────────┐
-│  [AI 图标]     │  Writing Tasks  [APP]  {时间戳}   │
+│  [WT 图标]     │  Writing Tasks  [APP]  {时间戳}          │
 │                ├───────────────────────────────────────────┤
 │                │  ┌─ 消息卡片 ─────────────────────────┐   │
 │                │  │  {标题行}                          │   │
@@ -110,7 +107,7 @@ flowchart TD
 
 | 组件 | 说明 |
 |---|---|
-| **Bot 头像** | 渐变色圆角方形图标（灯泡）。每条消息左侧显示一次。 |
+| **Bot 头像** | Writing Tasks 功能 icon。每条消息左侧显示一次。 |
 | **发送者信息栏** | `Writing Tasks`（加粗）+ `APP` 徽章 + 时间戳。位于卡片上方。 |
 | **消息卡片** | 白色背景、圆角、灰色细边框。包含所有内容。 |
 | **标题行** | 加粗文字 + 状态 emoji。卡片内第一行。 |
@@ -139,7 +136,7 @@ flowchart TD
 │ ✨ {N} new writing tasks are ready to go        ← 标题          │
 │                                                                 │
 │ @{用户名} — Writing tasks from **{会议名称}**                    │
-│   · {开始时间}–{结束时间} · Hosted by {主持人}   ← 上下文信息     │
+│   | {开始时间}–{结束时间} · Hosted by {主持人}   ← 上下文信息    │
 │                                                                 │
 │ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─            │
 │ **1. {任务标题}**                               ← 任务          │
@@ -161,7 +158,7 @@ flowchart TD
 | 板块 | 格式 | 说明 |
 |---|---|---|
 | 标题 | `✨ {N} new writing tasks are ready to go`（加粗） | N = 检测到的任务数量 |
-| 上下文行 | `@{用户} — Writing tasks from **{会议名称}** · {时间段} · Hosted by {主持人}` | @mention 为 Zoom Chat 可点击的用户提及 |
+| 上下文行 | `@{用户} — Writing tasks from **{会议名称}** | {时间段} · Hosted by {主持人}` | @mention 为 Zoom Chat 可点击的用户提及 |
 | 任务列表 | 编号列表，任务之间以细线分隔 | 每个任务一条 |
 | 任务条目 — 标题 | `{序号}. {任务标题}`（加粗） | 从会议转录中提取的任务名称 |
 | 任务条目 — Prompt | `{AI 生成的 Prompt}`（浅色文字） | AI 自动生成的写作指令，描述具体要写什么 |
@@ -173,7 +170,7 @@ flowchart TD
 ```
 ✨ 4 new writing tasks are ready to go
 
-@Alex Chen — Writing tasks from Sprint Planning · 9:00–10:00 · Hosted by Sarah Chen
+@Alex Chen — Writing tasks from Sprint Planning | 9:00–10:00 · Hosted by Sarah Chen
 
 1. Post sprint update to #engineering channel
    Share a brief sprint update covering auth module progress, dashboard PR
@@ -215,7 +212,7 @@ flowchart TD
 ┌─────────────────────────────────────────────────────────────────┐
 │ ✅ Task done: {任务标题}                         ← 标题         │
 │                                                                 │
-│ @{用户} — {固定句式介绍语}                        ← 介绍语       │
+│ @{用户} — {固定句式介绍语}                       ← 介绍语       │
 │                                                                 │
 │ ┃ {产出内容预览 — 因产出类型而异}          ← 绿色左竖线引用块   │
 │                                                                 │
@@ -227,13 +224,15 @@ flowchart TD
 | 板块 | 格式 | 说明 |
 |---|---|---|
 | 标题 | `✅ Task done: {任务标题}`（加粗） | 所有产出类型共用此格式 |
-| 介绍语 | 固定句式，不嵌入任务名称（见下方分类说明） | 任务名称已在标题行展示，介绍语仅包含目标标识符和数字 |
+| 介绍语 | 固定句式，按任务类型选词（见下方分类说明） | 任务名称已在标题行展示，介绍语仅包含目标标识符和数字 |
 | 产出预览 | 绿色左竖线引用块，内容因产出类型而异 | 展示生成结果 |
 | 操作栏 | `[View Result]` 按钮 | 所有产出类型共用 |
 
-#### 按产出类型分类说明
+#### 介绍语设计原则
 
-介绍语采用**固定句式**，不嵌入任务名称或描述（任务名称已在标题行 `Task done: {title}` 中展示）。仅**目标标识符**（频道名 / 邮箱地址）和**数字**为变量。以下逐一说明：
+介绍语采用**固定句式**，不嵌入任务名称或描述（任务名称已在标题行 `Task done: {title}` 中展示）。根据任务类型选用对应名词（message / email / document / deliverables），仅**目标标识符**（频道名 / 邮箱地址）和**数字**为变量。
+
+#### 按产出类型分类说明
 
 ---
 
@@ -309,7 +308,7 @@ flowchart TD
 |---|---|
 | 介绍语 | `@{用户} — Your document has been updated with {N} changes:` |
 | 变更摘要 | 编号纯文本列表（引用块外），最多 3 条。格式：`{序号}. **{章节名}** — {变更详情}` |
-| 产出预览 | 绿色引用块中展示 `📄 {文档名称}` 为可点击的蓝色超链接 |
+| 产出预览 | 绿色引用块中展示 `{文档icon} {文档名称}` 为可点击的蓝色超链接 |
 
 示例：
 
@@ -330,7 +329,31 @@ flowchart TD
 
 ---
 
-##### (d) 通用消息（无指定收件人/频道）
+##### (d) 文档创建
+
+适用于：任务类型为 `doc_create`。
+
+| 板块 | 内容 |
+|---|---|
+| 介绍语 | `@{用户} — Your document has been created:` |
+| 产出预览 | 绿色引用块中展示 `{文档icon} {文档名称}` 为可点击的蓝色超链接 |
+
+示例：
+
+```
+✅ Task done: Create Q2 product roadmap PRD
+
+@Alex Chen — Your document has been created:
+
+┃ 📄 Q2 Product Roadmap PRD
+
+───────────────────────
+[View Result]
+```
+
+---
+
+##### (e) 通用消息（无指定收件人/频道）
 
 适用于：任务类型为 `message`，但没有指定具体的频道或收件人。
 
@@ -358,23 +381,14 @@ flowchart TD
 
 ---
 
-##### (e) 多产出任务
+##### (f) 多产出任务
 
 适用于：任务类型为 `multi_output`，一个任务生成了多个交付物。
 
 | 板块 | 内容 |
 |---|---|
 | 介绍语 | `@{用户} — Your deliverables are ready. {N} files included:` |
-| 产出预览 | 绿色引用块中逐行展示每个交付物：`{类型 emoji} {文件名}` 为可点击的蓝色超链接 |
-
-**文件类型与 Emoji 映射表：**
-
-| 文件类型 | Emoji |
-|---|---|
-| 幻灯片 / 演示文稿 | 📊 |
-| 电子表格 | 📋 |
-| 数据表 | 📑 |
-| 文档 | 📄 |
+| 产出预览 | 绿色引用块中逐行展示每个交付物：`{文件类型icon} {文件名}` 为可点击的蓝色超链接 |
 
 示例：
 
@@ -390,6 +404,19 @@ flowchart TD
 ───────────────────────
 [View Result]
 ```
+
+---
+
+#### 介绍语汇总表
+
+| 任务类型 | 固定句式 | 变量部分 |
+|---|---|---|
+| `message`（有频道） | `Your message for **#{频道}** has been prepared:` | 频道名 |
+| `email` | `Your email to **{邮箱}** has been prepared:` | 邮箱地址 |
+| `doc_update` | `Your document has been updated with {N} changes:` | 变更数量 |
+| `doc_create` | `Your document has been created:` | 无 |
+| `message`（无收件人） | `Your message has been prepared:` | 无 |
+| `multi_output` | `Your deliverables are ready. {N} files included:` | 文件数量 |
 
 ---
 
@@ -526,22 +553,22 @@ flowchart TD
 
 ### 6.7 可点击的文档 / 文件链接
 
-- **出现位置：** "任务完成"消息中的文档更新和多产出类型
+- **出现位置：** "任务完成"消息中的文档更新、文档创建和多产出类型
 - **交互行为：**
   1. 在 **应用内文档查看器** 或新浏览器标签页中打开文档/文件。
   2. 这是直接打开操作 —— 不会跳转到 Writing Tasks 界面。
 
 ### 交互总览表
 
-| 按钮 / 链接 | 所在消息类别 | 跳转目标 | 是否自动执行？ |
-|---|---|---|---|
-| Get Started | 任务检测（每个任务） | Writing Tasks > 任务 Chat Panel | 是 |
-| Edit Prompt | 任务检测（每个任务） | Writing Tasks > 任务 Chat Panel（Prompt 预填） | 否 |
-| Run All | 任务检测（底部） | Writing Tasks > 所有任务卡片（Running 状态） | 是（全部任务） |
-| View in Writing Tasks | 任务检测（底部） | Writing Tasks > 该会议任务列表 | 否 |
-| View Result | 任务完成（底部） | Writing Tasks > 任务 Chat Panel（显示产出） | 否 |
-| Provide More Info | 需要操作（底部） | Writing Tasks > 任务 Chat Panel（输入框聚焦） | 否 |
-| 文档/文件链接 | 任务完成 — 文档更新、多产出（行内） | 应用内查看器或新标签页 | 不适用 |
+| 按钮 / 链接 | 所在消息类别 | 跳转目标 |
+|---|---|---|
+| Get Started | 任务检测（每个任务） | Writing Tasks > 任务 Chat Panel |
+| Edit Prompt | 任务检测（每个任务） | Writing Tasks > 任务 Chat Panel（Prompt 预填） |
+| Run All | 任务检测（底部） | Writing Tasks > 定位到该会议任务列表 |
+| View in Writing Tasks | 任务检测（底部） | Writing Tasks > 定位到该会议任务列表 |
+| View Result | 任务完成（底部） | Writing Tasks > 任务 Chat Panel（显示产出） |
+| Provide More Info | 需要操作（底部） | Writing Tasks > 任务 Chat Panel |
+| 文档/文件链接 | 任务完成 — 文档类、多产出（行内） | 应用内查看器或新标签页 |
 
 ---
 
@@ -585,123 +612,9 @@ flowchart TD
 | 行内链接 | `[文本](url)` | 文档名称、文件名称 |
 | 操作按钮 | Bot API 按钮附件 | Run All、View Result、Provide More Info 等 |
 
-### 不支持的功能（禁止使用）
-
-- Flexbox 或 Grid 布局
-- 自定义 HTML 或嵌入式组件
-- 图片或多媒体嵌入
-- 行内样式或自定义颜色
-- 表格
-
 ### 按钮类型
 
 Zoom Chat Bot 消息支持两种交互元素：
 
 1. **行内文字链接** —— 渲染为消息正文中带下划线的蓝色文字（如 `Get Started | Edit Prompt`）。本质是标准 Markdown 链接。
 2. **操作按钮** —— 渲染为消息内容下方的样式化按钮（如 `[Run All]`、`[View Result]`）。这些是 Bot API 的按钮附件，显示在操作栏区域。
-
----
-
-## 9. 数据模型要求
-
-### 任务检测消息
-
-```typescript
-interface TaskDetectionMessage {
-  meeting: {
-    id: string;
-    title: string;               // "Sprint Planning"
-    fullTitle: string;            // "Alex Chen's Zoom Meeting 2026-04-15 09:00 (GMT-7:00)"
-    timeRange: string;            // "9:00–10:00"
-    hostName: string;             // "Sarah Chen"
-  };
-  tasks: Array<{
-    id: string;
-    type: 'message' | 'email' | 'doc_update' | 'multi_output';
-    title: string;                // "Post sprint update to #engineering channel"
-    prompt: string;               // AI 生成的 Prompt，描述具体要写什么
-  }>;
-  userId: string;                 // 要 @提及的目标用户 ID
-  userName: string;               // "Alex Chen"
-}
-```
-
-### 任务完成消息
-
-根据产出类型不同，使用不同的数据结构：
-
-#### 单产出（Chat 消息 / 邮件 / 通用消息）
-
-```typescript
-interface SingleOutputMessage {
-  taskId: string;
-  taskTitle: string;              // "Post sprint update to #engineering channel"
-  type: 'message' | 'email';
-  output: string;                 // 完整的生成文本内容
-  targetChannel?: string;         // "#engineering"（仅 Chat 消息 + 有指定频道时）
-  recipientEmail?: string;        // "sarah.chen@company.com"（仅邮件类型时）
-  userId: string;
-  userName: string;
-}
-```
-
-**介绍语的动态生成逻辑（固定句式，按任务类型选词）：**
-- 类型为 `message` + 有 `targetChannel` → `Your message for **#{频道}** has been prepared:`
-- 类型为 `email` + 有 `recipientEmail` → `Your email to **{邮箱}** has been prepared:`
-- 类型为 `message` + 无收件人 → `Your message has been prepared:`
-
-#### 文档更新
-
-```typescript
-interface DocUpdateMessage {
-  taskId: string;
-  taskTitle: string;              // "Update design specifications based on team review"
-  docName: string;                // "Design Specifications — Q1 Update"
-  docUrl: string;                 // 用于打开文档的链接
-  changes: Array<{
-    sectionTitle: string;         // "Grid Layout"
-    detail: string;               // "Updated to 12-column grid system"
-  }>;                             // 最多展示 3 条
-  userId: string;
-  userName: string;
-}
-```
-
-#### 多产出
-
-```typescript
-interface MultiOutputMessage {
-  taskId: string;
-  taskTitle: string;              // "Q1 business review package"
-  deliverables: Array<{
-    name: string;                 // "Q1 Business Review Deck"
-    type: 'slides' | 'sheets' | 'data_table' | 'document';
-    url: string;                  // 用于打开文件的链接
-  }>;
-  userId: string;
-  userName: string;
-}
-```
-
-### 需要操作消息
-
-```typescript
-interface ActionNeededMessage {
-  taskId: string;
-  taskTitle: string;              // "Share Q2 product roadmap summary with leadership"
-  questions: string[];            // 澄清问题数组（通常 2-4 个）
-  userId: string;
-  userName: string;
-}
-```
-
-### 文件类型与 Emoji 映射
-
-```typescript
-const FILE_TYPE_EMOJI: Record<string, string> = {
-  slides: '📊',
-  sheets: '📋',
-  data_table: '📑',
-  document: '📄',
-};
-```
