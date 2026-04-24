@@ -85,7 +85,7 @@ const App = () => {
               <SenderLine time="9:17 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✅ Task done: Post sprint update</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your sprint update message for <span className="font-medium">#engineering</span> is ready:</p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your output for <span className="font-medium">#engineering</span> has been prepared:</p>
                 <div className="border-l-[3px] border-green-500 pl-3">
                   <p className="text-[12.5px] text-gray-600 whitespace-pre-line">{autoCompletedOutputs[0].output}</p>
                 </div>
@@ -101,7 +101,7 @@ const App = () => {
               <SenderLine time="9:18 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✅ Task done: Stakeholder follow-up email</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your email has been drafted to <span className="font-medium">sarah.chen@company.com</span>:</p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your output to <span className="font-medium">sarah.chen@company.com</span> has been prepared:</p>
                 <div className="border-l-[3px] border-green-500 pl-3">
                   <p className="text-[12.5px] text-gray-600 whitespace-pre-line">{autoCompletedOutputs[1].output}</p>
                 </div>
@@ -117,7 +117,7 @@ const App = () => {
               <SenderLine time="9:18 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✅ Task done: Design specifications updated</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your design specifications document has been updated with 3 changes:</p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your document has been updated with 3 changes:</p>
                 <p className="text-[12.5px] text-gray-600">1. <span className="font-medium text-gray-700">Grid Layout</span> — Updated to 12-column grid system</p>
                 <p className="text-[12.5px] text-gray-600">2. <span className="font-medium text-gray-700">Button Radius</span> — Revised from 4px to 8px globally</p>
                 <p className="text-[12.5px] text-gray-600 mb-2">3. <span className="font-medium text-gray-700">Accessibility</span> — Added ARIA label guidelines</p>
@@ -136,7 +136,7 @@ const App = () => {
               <SenderLine time="9:19 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✅ Task done: Meeting recap</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your meeting recap is ready:</p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your output has been prepared:</p>
                 <div className="border-l-[3px] border-green-500 pl-3">
                   <p className="text-[12.5px] text-gray-600 whitespace-pre-line">{autoCompletedOutputs[3].output}</p>
                 </div>
@@ -172,7 +172,7 @@ const App = () => {
               <SenderLine time="9:22 AM" />
               <div className="mt-1 rounded-lg border border-gray-200 bg-white p-3 text-[13px] text-gray-700 leading-relaxed">
                 <p className="font-bold text-gray-900 mb-1">✅ Task done: Q1 business review package</p>
-                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your Q1 business review package has been prepared. 3 deliverables are ready:</p>
+                <p className="mb-2"><span className="text-blue-600 font-medium">@Alex Chen</span> — Your output has been prepared. 3 deliverables are ready:</p>
                 <div className="border-l-[3px] border-green-500 pl-3 space-y-1">
                   <p className="text-[12.5px]">📊 <span className="text-blue-600 hover:underline cursor-pointer font-medium">Q1 Business Review Deck</span></p>
                   <p className="text-[12.5px]">📋 <span className="text-blue-600 hover:underline cursor-pointer font-medium">Q1 Revenue & Metrics Breakdown</span></p>

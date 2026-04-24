@@ -215,7 +215,7 @@ flowchart TD
 ┌─────────────────────────────────────────────────────────────────┐
 │ ✅ Task done: {任务标题}                         ← 标题         │
 │                                                                 │
-│ @{用户} — {介绍语，因产出类型而异}               ← 介绍语       │
+│ @{用户} — {固定句式介绍语}                        ← 介绍语       │
 │                                                                 │
 │ ┃ {产出内容预览 — 因产出类型而异}          ← 绿色左竖线引用块   │
 │                                                                 │
@@ -227,13 +227,13 @@ flowchart TD
 | 板块 | 格式 | 说明 |
 |---|---|---|
 | 标题 | `✅ Task done: {任务标题}`（加粗） | 所有产出类型共用此格式 |
-| 介绍语 | 因产出类型而异（见下方分类说明） | 提供上下文 |
+| 介绍语 | 固定句式，不嵌入任务名称（见下方分类说明） | 任务名称已在标题行展示，介绍语仅包含目标标识符和数字 |
 | 产出预览 | 绿色左竖线引用块，内容因产出类型而异 | 展示生成结果 |
 | 操作栏 | `[View Result]` 按钮 | 所有产出类型共用 |
 
 #### 按产出类型分类说明
 
-根据任务的产出类型不同，**介绍语**和**产出预览区**的内容有所差异。以下逐一说明：
+介绍语采用**固定句式**，不嵌入任务名称或描述（任务名称已在标题行 `Task done: {title}` 中展示）。仅**目标标识符**（频道名 / 邮箱地址）和**数字**为变量。以下逐一说明：
 
 ---
 
@@ -243,7 +243,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your {任务描述} for **#{频道名}** is ready:` |
+| 介绍语 | `@{用户} — Your output for **#{频道名}** has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整的生成消息文本 |
 
 示例：
@@ -251,7 +251,7 @@ flowchart TD
 ```
 ✅ Task done: Post sprint update
 
-@Alex Chen — Your sprint update message for #engineering is ready:
+@Alex Chen — Your output for #engineering has been prepared:
 
 ┃ Hi team, quick sprint update:
 ┃ • Auth module: Core logic complete, PR #127 under review
@@ -271,7 +271,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your email has been drafted to **{收件人邮箱}**:` |
+| 介绍语 | `@{用户} — Your output to **{收件人邮箱}** has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整邮件内容（主题行、称呼、正文、落款） |
 
 示例：
@@ -279,7 +279,7 @@ flowchart TD
 ```
 ✅ Task done: Stakeholder follow-up email
 
-@Alex Chen — Your email has been drafted to sarah.chen@company.com:
+@Alex Chen — Your output to sarah.chen@company.com has been prepared:
 
 ┃ Hi Sarah,
 ┃
@@ -307,7 +307,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your {文档描述} has been updated with {N} changes:` |
+| 介绍语 | `@{用户} — Your document has been updated with {N} changes:` |
 | 变更摘要 | 编号纯文本列表（引用块外），最多 3 条。格式：`{序号}. **{章节名}** — {变更详情}` |
 | 产出预览 | 绿色引用块中展示 `📄 {文档名称}` 为可点击的蓝色超链接 |
 
@@ -316,7 +316,7 @@ flowchart TD
 ```
 ✅ Task done: Design specifications updated
 
-@Alex Chen — Your design specifications document has been updated with 3 changes:
+@Alex Chen — Your document has been updated with 3 changes:
 
 1. Grid Layout — Updated to 12-column grid system
 2. Button Radius — Revised from 4px to 8px globally
@@ -336,7 +336,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your {任务描述} is ready:`（不指定具体频道/收件人） |
+| 介绍语 | `@{用户} — Your output has been prepared:` |
 | 产出预览 | 绿色引用块中展示完整的生成文本 |
 
 示例：
@@ -344,7 +344,7 @@ flowchart TD
 ```
 ✅ Task done: Meeting recap
 
-@Alex Chen — Your meeting recap is ready:
+@Alex Chen — Your output has been prepared:
 
 ┃ Sprint Planning Meeting — Key Takeaways
 ┃ • Auth module core logic complete, PR under review
@@ -364,7 +364,7 @@ flowchart TD
 
 | 板块 | 内容 |
 |---|---|
-| 介绍语 | `@{用户} — Your {描述} has been prepared. {N} deliverables are ready:` |
+| 介绍语 | `@{用户} — Your output has been prepared. {N} deliverables are ready:` |
 | 产出预览 | 绿色引用块中逐行展示每个交付物：`{类型 emoji} {文件名}` 为可点击的蓝色超链接 |
 
 **文件类型与 Emoji 映射表：**
@@ -381,7 +381,7 @@ flowchart TD
 ```
 ✅ Task done: Q1 business review package
 
-@Alex Chen — Your Q1 business review package has been prepared. 3 deliverables are ready:
+@Alex Chen — Your output has been prepared. 3 deliverables are ready:
 
 ┃ 📊 Q1 Business Review Deck
 ┃ 📋 Q1 Revenue & Metrics Breakdown
@@ -645,10 +645,10 @@ interface SingleOutputMessage {
 }
 ```
 
-**介绍语的动态生成逻辑：**
-- 有 `targetChannel` → `Your {描述} for **#{频道}** is ready:`
-- 有 `recipientEmail` → `Your email has been drafted to **{邮箱}**:`
-- 两者都没有 → `Your {描述} is ready:`
+**介绍语的动态生成逻辑（固定句式，不嵌入任务名称）：**
+- 有 `targetChannel` → `Your output for **#{频道}** has been prepared:`
+- 有 `recipientEmail` → `Your output to **{邮箱}** has been prepared:`
+- 两者都没有 → `Your output has been prepared:`
 
 #### 文档更新
 
